@@ -1,0 +1,4 @@
+[core]
+    remote = dvcdata
+['remote "dvcdata"']
+    url = C:\Users\User\AppData\Local\Temp
