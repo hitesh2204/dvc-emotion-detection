@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import os
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 import yaml
 import logging
 
@@ -54,10 +54,10 @@ def load_data(file_path: str) -> pd.DataFrame:
         logger.error('Unexpected error occurred while loading the data: %s', e)
         raise
 
-def apply_tfidf(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features: int) -> tuple:
-    """Apply TfIdf to the data."""
+def apply_bow(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features: int) -> tuple:
+    """Apply BOW to the data."""
     try:
-        vectorizer = TfidfVectorizer(max_features=max_features)
+        vectorizer = CountVectorizer(max_features=max_features)
 
         X_train = train_data['content'].values
         y_train = train_data['sentiment'].values
@@ -84,8 +84,8 @@ def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str)
     try:
         raw_data_path = os.path.join(data_path, 'features')
         os.makedirs(raw_data_path, exist_ok=True)
-        train_data.to_csv(os.path.join(raw_data_path, "train_tfidf.csv"), index=False)
-        test_data.to_csv(os.path.join(raw_data_path, "test_tfidf.csv"), index=False)
+        train_data.to_csv(os.path.join(raw_data_path, "train_bow.csv"), index=False)
+        test_data.to_csv(os.path.join(raw_data_path, "test_bow.csv"), index=False)
         logger.debug('Train and test data saved to %s', raw_data_path)
     except Exception as e:
         logger.error('Unexpected error occurred while saving the data: %s', e)
@@ -99,7 +99,7 @@ def main():
         train_data = load_data('./data/processed/train_processed.csv')
         test_data = load_data('./data/processed/test_processed.csv')
 
-        train_df, test_df = apply_tfidf(train_data, test_data, max_features)
+        train_df, test_df = apply_bow(train_data, test_data, max_features)
 
         save_data(train_df, test_df, data_path='./data')
 
